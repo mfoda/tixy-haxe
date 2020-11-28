@@ -18,10 +18,12 @@ class Main {
 	static var println = Sys.println;
 
 	public static function main() {
-		code = Sys.args().empty() ? "sin(y/8+t)" : Sys.args()[0];
+		// "sin(y/8+t*4)"
+		code = "sin(t-sqrt(pow((x-7.5),2)+pow((y-6),2)))";
+		code = Sys.args().empty() ? code : Sys.args()[0];
 
 		println(ANSI.eraseDisplay());
-		println(ANSI.set(Off, Green));
+		println(ANSI.set(Off));
 		println(ANSI.hideCursor());
 		println(ANSI.title("T.I.X.Y"));
 		for (i in 0...16) {
@@ -34,7 +36,7 @@ class Main {
 	}
 
 	static function render() {
-		var dt = 1 / 60;
+		var dt = 1 / 30;
 		var time = 0.;
 		var characters = " .-=oO0@";
 		var ast = parser.parseString(code);
@@ -55,15 +57,23 @@ class Main {
 						interp.variables.set("x", col);
 						interp.variables.set("y", row);
 						matrix[row][col] = interp.execute(ast);
-						var value = Math.min(1, Math.abs(matrix[row][col]));
+						var color = Red;
+						var value = matrix[row][col];
+						if (value < 0 ) {
+							value = -value;
+							color = White;
+						}
+						if (value > 1)
+							value = 1;
+
 						var character = characters.charAt(Math.floor(value * characters.length));
-						cmd += ANSI.setXY(col, row);
-						cmd += "\x1b[31m" + character;
+						cmd += ANSI.setXY(col + col*2, row + Std.int(row/16));
+						cmd += ANSI.aset([Bold, color]) + character;
 					}
 					cmd += "\n";
 				}
 				Sys.stdout().writeString(cmd);
-				println(ANSI.set(Green, Bold) + code + ANSI.set(BoldOff));
+				println(ANSI.set(White, Bold) + "\n\n(t,i,x,y) -> " + code + ANSI.set(BoldOff));
 				time += dt;
 				Sys.sleep(dt);
 			}
