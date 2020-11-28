@@ -1,0 +1,7 @@
+-main Main
+-cp src/
+# -neko bin/Tixy.n
+-hl bin/Tixy.hl
+-lib hscript
+-lib ansi
+-cmd hl bin/Tixy.hl
