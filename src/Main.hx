@@ -67,7 +67,7 @@ class Main {
 							value = 1;
 
 						var character = characters.charAt(Math.floor(value * characters.length));
-						cmd += ANSI.setXY(col + col*2, row + Std.int(row/16));
+						cmd += ANSI.setXY(col + col*2 + 4, row + Std.int(row/16) + 2);
 						cmd += ANSI.aset([Bold, color]) + character;
 					}
 					cmd += "\n";
